@@ -68,7 +68,7 @@
             <img src="Gazebo.jpg" alt="Technology and Code" width="800">
 
             <h1>Tell us about yourself</h1>
-            <form>
+            <form id="myForm">
                 <label for="fname">First name</label><br>
                 <input type="text" id="fname" name="fname"><br>
                 <label for="lname">Last name:</label><br>
@@ -106,6 +106,55 @@
                 <p><input type="submit" value="Submit"></p>
             </form>
             
+            <div id="thankYouMessage">Thank you for completing the form!</div>
+            <div id="formDataDisplay"></div>
+        
+            <script>
+                const form = document.getElementById('myForm');
+                const thankYouMessage = document.getElementById('thankYouMessage');
+                const formDataDisplay = document.getElementById('formDataDisplay');
+
+                form.addEventListener('submit', function (event) {
+                    // Prevent the default form submission
+                    event.preventDefault();
+
+                    // Ask for confirmation
+                    const userConfirm = confirm(
+                        "Are you sure the information you have provided is correct?\n" +
+                        "Click Yes to submit or Cancel to exit."
+                    );
+
+                    // If user clicks Cancel, just exit
+                    if (!userConfirm) {
+                        return;
+                    }
+
+                    if (userConfirm) {
+                        // Extract form data using FormData API
+                        const formData = new FormData(form);
+
+                        const fname = formData.get("fname");
+                        const lname = formData.get("lname");
+                        const ageBracket = formData.get("ageBracket");
+                        const specialization = formData.get("specialization");
+                        const comments = formData.get("message");
+
+                        // Display the data in a popup
+                        alert(
+                            "Thank you for completing the form!\n\n" +
+                            "Here is the information you provided:\n" +
+                            "First Name: " + fname + "\n" +
+                            "Last Name: " + lname + "\n" +
+                            "Age Bracket: " + ageBracket + "\n" +
+                            "Specialization: " + specialization + "\n" +
+                            "Comments: " + comments
+                        );
+
+                    }
+
+                });
+    
+            </script>
 
         </body>
 </html>
