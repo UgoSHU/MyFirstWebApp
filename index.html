@@ -115,6 +115,12 @@
     <div id="thankYouMessage">Thank you for completing the form!</div>
     <div id="formDataDisplay"></div>
 
+    <!-- Weather API Integration -->
+    <h2>Weather Information</h2>
+    <div id="weather">
+        <p>Loading weather data...</p>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         /*Change background of form*/
@@ -170,6 +176,49 @@
             }
 
         });
+         // Weather API Integration
+         async function getWeather(latitude, longitude) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data && data.current_weather) {
+                    document.getElementById('weather').innerHTML = `
+                        <p>Location: Latitude ${latitude}, Longitude ${longitude}</p>
+                        <p>Temperature: ${data.current_weather.temperature} °C</p>
+                        <p>Condition: Weather code ${data.current_weather.weathercode}</p>
+                        <p>Windspeed: ${data.current_weather.windspeed} km/h</p>
+                    `;
+                } else {
+                    document.getElementById('weather').innerHTML = `<p>Weather data unavailable.</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                document.getElementById('weather').innerHTML = `<p>Error fetching weather data.</p>`;
+            }
+        }
+
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        getWeather(latitude, longitude);
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        document.getElementById('weather').innerHTML = `<p>Unable to retrieve your location.</p>`;
+                    }
+                );
+            } else {
+                document.getElementById('weather').innerHTML = `<p>Geolocation is not supported by your browser.</p>`;
+            }
+        }
+
+        getUserLocation();
     </script>
 
 </body>
